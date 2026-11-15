@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Akun - MY WEBSITE</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #0b0f19;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding-top: 60px;
+      color: #ffffff;
+    }
+
+    .login-card {
+      background-color: #161d2f;
+      width: 90%;
+      max-width: 340px;
+      padding: 32px 24px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      text-align: center;
+    }
+
+    .brand-title {
+      color: #3b82f6;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .page-title {
+      color: #f8fafc;
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 14px;
+      background-color: #232d42;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      color: #e2e8f0;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input::placeholder {
+      color: #94a3b8;
+    }
+
+    .form-input:focus {
+      border-color: #3b82f6;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      background-color: #2563eb;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-submit:hover {
+      background-color: #1d4ed8;
+    }
+
+    .error-msg {
+      color: #f87171;
+      font-size: 12px;
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    .register-text {
+      margin-top: 18px;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .register-text a {
+      color: #3b82f6;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer-note {
+      margin-top: 12px;
+      font-size: 10px;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <div class="brand-title">MY WEBSITE</div>
+    <h1 class="page-title">Login Akun</h1>
+
+    <div id="errorMsg" class="error-msg">Password salah untuk akun admin!</div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <input type="text" id="username" class="form-input" placeholder="Username" required>
+      </div>
+      
+      <div class="form-group">
+        <input type="password" id="password" class="form-input" placeholder="Password" required>
+      </div>
+
+      <button type="submit" class="btn-submit">MASUK SEKARANG</button>
+    </form>
+
+    <div class="register-text">
+      Pengunjung? Masukkan username & password bebas
+    </div>
+
+    <div class="footer-note">
+      Login aman dan sederhana
+    </div>
+  </div>
+
+  <script>
+    function getDevice() {
+      const ua = navigator.userAgent;
+      if (/android/i.test(ua)) return "Android";
+      if (/linux/i.test(ua)) return "Linux";
+      if (/windows/i.test(ua)) return "Windows";
+      if (/iphone|ipad/i.test(ua)) return "iOS";
+      return "Desktop";
+    }
+
+    function getBrowser() {
+      const ua = navigator.userAgent;
+      if (ua.includes("Chrome") && !ua.includes("Edg")) return "Chrome";
+      if (ua.includes("Firefox")) return "Firefox";
+      if (ua.includes("Safari") && !ua.includes("Chrome")) return "Safari";
+      if (ua.includes("Edg")) return "Edge";
+      return "Browser";
+    }
+
+    function getFormattedDate() {
+      const now = new Date();
+      const d = String(now.getDate()).padStart(2, '0');
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const y = now.getFullYear();
+      const h = String(now.getHours()).padStart(2, '0');
+      const min = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      return `${d}/${m}/${y} ${h}:${min}:${s}`;
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+
+      // Cek jika username adalah admin
+      if (username.toLowerCase() === 'admin') {
+        if (password !== 'bagas123') {
+          errorMsg.style.display = 'block';
+          return;
+        }
+      }
+
+      errorMsg.style.display = 'none';
+
+      // Ambil data lama dari localStorage
+      let logs = JSON.parse(localStorage.getItem('loginLogs')) || [];
+      let totalLogin = parseInt(localStorage.getItem('totalLogin')) || 0;
+      let visitors = JSON.parse(localStorage.getItem('uniqueVisitors')) || [];
+
+      // Tambah hitungan total login
+      totalLogin++;
+      localStorage.setItem('totalLogin', totalLogin);
+
+      // Catat pengguna unik
+      if (!visitors.includes(username)) {
+        visitors.push(username);
+        localStorage.setItem('uniqueVisitors', JSON.stringify(visitors));
+      }
+
+      // Simpan riwayat aktivitas baru di urutan paling atas
+      const newLog = {
+        username: username === 'admin' ? 'bagas' : username,
+        aktivitas: 'Berhasil login',
+        perangkat: getDevice(),
+        browser: getBrowser(),
+        waktu: getFormattedDate()
+      };
+      logs.unshift(newLog);
+      if (logs.length > 50) logs.pop();
+      localStorage.setItem('loginLogs', JSON.stringify(logs));
+
+      // Simpan sesi aktif saat ini
+      localStorage.setItem('currentUser', JSON.stringify({
+        username: username === 'admin' ? 'bagas' : username,
+        role: username.toLowerCase() === 'admin' ? 'admin' : 'visitor',
+        perangkat: getDevice(),
+        browser: getBrowser()
+      }));
+
+      // Arahkan sesuai hak akses
+      if (username.toLowerCase() === 'admin') {
+        window.location.href = 'admin.html';
+      } else {
+        window.location.href = 'visitor.html';
+      }
+    });
+  </script>
+
+</body>
+</html>
